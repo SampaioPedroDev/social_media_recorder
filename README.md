@@ -77,20 +77,22 @@ https://developer.apple.com/documentation/coreaudiotypes/coreaudiotype_constants
 
 ## Usage
 
-    Align(
-       
-         alignment: Alignment.centerRight,
-         
-         child: SocialMediaRecorder(
-       
-         sendRequestFunction: (soundFile) {
-       
-         # soundFile represent the sound you recording
-       
-         },
-       
-         encode: AudioEncoderType.AAC,
-       
-      ),
-
-    );
+```
+Align(
+        alignment: Alignment.centerRight,
+        child: SocialMediaRecorder(
+                sendRequestFunction: (soundFile) {
+                        # soundFile represent the sound you recording
+                },
+                
+                startRecording: () {
+                        // function called when start recording
+                },
+                stopRecording: (time) {
+                        // function called when stop recording, return the recording time
+                },
+                
+                encode: AudioEncoderType.AAC,
+        ),
+);
+```
