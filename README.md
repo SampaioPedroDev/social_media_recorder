@@ -82,7 +82,7 @@ Align(
         alignment: Alignment.centerRight,
         child: SocialMediaRecorder(
                 sendRequestFunction: (soundFile) {
-                        # soundFile represent the sound you recording
+                        // soundFile represent the sound you recording
                 },
                 
                 startRecording: () {
