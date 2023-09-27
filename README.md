@@ -89,7 +89,7 @@ Align(
                         // function called when start recording
                 },
                 stopRecording: (time) {
-                        // function called when stop recording, return the recording time
+                        // function called when stop recording, return the recorded time
                 },
                 
                 encode: AudioEncoderType.AAC,
