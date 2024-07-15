@@ -55,6 +55,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 //  print("the current path is ${soundFile.path}");
               },
               encode: AudioEncoderType.AAC,
+              // storeSoundRecoringPath: "/storage/emulated/0/new_record_sound",
             ),
           ),
         ),
