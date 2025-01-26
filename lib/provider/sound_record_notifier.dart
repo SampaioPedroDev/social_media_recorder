@@ -70,7 +70,7 @@ class SoundRecordNotifier extends ChangeNotifier {
   Function(File soundFile, String time) sendRequestFunction;
 
   /// function called when stop recording, return the recording time (even if time < 1)
-  Function(String time)? stopRecording;
+  Function()? stopRecording;
 
   late AudioEncoderType encode;
 
@@ -107,7 +107,6 @@ class SoundRecordNotifier extends ChangeNotifier {
         String path = mPath;
         String _time = minute.toString() + ":" + second.toString();
         sendRequestFunction(File.fromUri(Uri(path: path)), _time);
-        stopRecording!(_time);
       }
     }
     resetEdgePadding();
@@ -128,6 +127,8 @@ class SoundRecordNotifier extends ChangeNotifier {
     if (_timer != null) _timer!.cancel();
     if (_timerCounter != null) _timerCounter!.cancel();
     recordMp3.stop();
+
+    stopRecording!();
     notifyListeners();
   }
 
@@ -196,8 +197,6 @@ class SoundRecordNotifier extends ChangeNotifier {
         RenderBox box = key.currentContext?.findRenderObject() as RenderBox;
         Offset position = box.localToGlobal(Offset.zero);
         if (position.dx <= MediaQuery.of(context).size.width * 0.6) {
-          String _time = minute.toString() + ":" + second.toString();
-          if (stopRecording != null) stopRecording!(_time);
           resetEdgePadding();
         } else if (x.dx >= MediaQuery.of(context).size.width) {
           edge = 0;

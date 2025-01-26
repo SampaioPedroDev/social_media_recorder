@@ -22,7 +22,7 @@ class SocialMediaRecorder extends StatefulWidget {
   final Function()? startRecording;
 
   /// function called when stop recording, return the recording time (even if time < 1)
-  final Function(String time)? stopRecording;
+  final Function()? stopRecording;
 
   /// recording Icon That pressesd to start record
   final Widget? recordIcon;
@@ -122,7 +122,7 @@ class _SocialMediaRecorder extends State<SocialMediaRecorder> {
     soundRecordNotifier = SoundRecordNotifier(
       maxRecordTime: widget.maxRecordTimeInSecond,
       startRecording: widget.startRecording ?? () {},
-      stopRecording: widget.stopRecording ?? (String x) {},
+      stopRecording: widget.stopRecording ?? () {},
       sendRequestFunction: widget.sendRequestFunction,
     );
 
@@ -142,7 +142,7 @@ class _SocialMediaRecorder extends State<SocialMediaRecorder> {
   Widget build(BuildContext context) {
     soundRecordNotifier.maxRecordTime = widget.maxRecordTimeInSecond;
     soundRecordNotifier.startRecording = widget.startRecording ?? () {};
-    soundRecordNotifier.stopRecording = widget.stopRecording ?? (String x) {};
+    soundRecordNotifier.stopRecording = widget.stopRecording ?? () {};
     soundRecordNotifier.sendRequestFunction = widget.sendRequestFunction;
     return MultiProvider(
         providers: [

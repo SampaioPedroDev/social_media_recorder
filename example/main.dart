@@ -48,7 +48,7 @@ class _MyHomePageState extends State<MyHomePage> {
               startRecording: () {
                 // function called when start recording
               },
-              stopRecording: (_time) {
+              stopRecording: () {
                 // function called when stop recording, return the recording time
               },
               sendRequestFunction: (soundFile, _time) {
