@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -8,6 +9,7 @@ import 'package:social_media_recorder/audio_encoder_type.dart';
 // import 'package:uuid/uuid.dart';
 
 class SoundRecordNotifier extends ChangeNotifier {
+  int _counter = 0;
   int _localCounterForMaxRecordTime = 0;
   GlobalKey key = GlobalKey();
   int? maxRecordTime;
@@ -25,7 +27,7 @@ class SoundRecordNotifier extends ChangeNotifier {
   String initialStorePathRecord = "";
 
   /// recording mp3 sound Object
-  Record recordMp3 = Record();
+  AudioRecorder recordMp3 = AudioRecorder();
 
   /// recording mp3 sound to check if all permisiion passed
   bool _isAcceptedPermission = false;
@@ -91,7 +93,9 @@ class SoundRecordNotifier extends ChangeNotifier {
     this.lockScreenRecord = false,
     this.encode = AudioEncoderType.AAC,
     this.maxRecordTime,
-  });
+  }) {
+    record(() {});
+  }
 
   /// To increase counter after 1 sencond
   void _mapCounterGenerater() {
@@ -114,6 +118,11 @@ class SoundRecordNotifier extends ChangeNotifier {
 
   /// used to reset all value to initial value when end the record
   resetEdgePadding() async {
+    if (_initWidth == -33) {
+      RenderBox box = key.currentContext?.findRenderObject() as RenderBox;
+      Offset position = box.localToGlobal(Offset.zero);
+      _initWidth = position.dx;
+    }
     _localCounterForMaxRecordTime = 0;
     isLocked = false;
     edge = 0;
@@ -155,8 +164,9 @@ class SoundRecordNotifier extends ChangeNotifier {
     }
     DateTime now = DateTime.now();
     String convertedDateTime =
-        "${now.year.toString()}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}-${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}";
+        "${_counter.toString()}${now.year.toString()}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}-${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}";
     // print("the current data is $convertedDateTime");
+    _counter++;
     String storagePath =
         _sdPath + "/" + convertedDateTime + _getSoundExtention();
     mPath = storagePath;
@@ -167,6 +177,8 @@ class SoundRecordNotifier extends ChangeNotifier {
   setNewInitialDraggableHeight(double newValue) {
     currentButtonHeihtPlace = newValue;
   }
+
+  double _initWidth = -33;
 
   /// used to change the draggable to top value
   /// or To The X vertical
@@ -202,16 +214,18 @@ class SoundRecordNotifier extends ChangeNotifier {
           edge = 0;
           edge = 0;
         } else {
-          if (x.dx <= MediaQuery.of(context).size.width * 0.5) {}
-          if (last < x.dx) {
-            edge = edge -= x.dx / 200;
-            if (edge < 0) {
-              edge = 0;
-            }
-          } else if (last > x.dx) {
-            edge = edge += x.dx / 200;
-          }
-          last = x.dx;
+          edge = (_initWidth - x.dx) > 0 ? (_initWidth - x.dx) : 0;
+
+          // if (x.dx <= MediaQuery.of(context).size.width * 0.5) {}
+          // if (last < x.dx) {
+          //   edge = edge -= x.dx / 200;
+          //   if (edge < 0) {
+          //     edge = 0;
+          //   }
+          // } else if (last > x.dx) {
+          //   edge = edge += x.dx / 200;
+          // }
+          // last = x.dx;
         }
         // ignore: empty_catches
       } catch (e) {}
@@ -257,8 +271,11 @@ class SoundRecordNotifier extends ChangeNotifier {
     } else {
       buttonPressed = true;
       String recordFilePath = await getFilePath();
-      _timer = Timer(const Duration(milliseconds: 900), () {
-        recordMp3.start(path: recordFilePath);
+      if (_timer != null) {
+        _timer?.cancel();
+      }
+      _timer = Timer(const Duration(milliseconds: 400), () {
+        recordMp3.start(const RecordConfig(), path: recordFilePath);
       });
 
       if (startRecord != null) {
